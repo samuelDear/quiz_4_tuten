@@ -1,5 +1,6 @@
 import React, { useState, Fragment, useEffect } from 'react'
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Picker } from 'native-base';
 import { StyleSheet, View, FlatList, Text, StatusBar, Image, TouchableOpacity, TextInput } from 'react-native';
 
 const Home = ({ route, navigation }) => {
@@ -141,7 +142,7 @@ const Home = ({ route, navigation }) => {
         let date = new Date(time);
         return `${date.getDate()}/${(date.getMonth() + 1)}/${date.getFullYear()}`;
     }
-
+    
     const renderItem = ( item, index ) => {
         return (
             <View key={index} style={styles.rowBox}>
@@ -272,12 +273,24 @@ const Home = ({ route, navigation }) => {
                         <View style={styles.welcomeBox}>
                             <Text style={styles.welcome}>Welcome!</Text>
                         </View>
-                        <View>
+                        <View style={{flexDirection: 'column'}}>
                             <TextInput value={searchTxt}
                                 onChangeText={txt => setSearchTxt(txt)}
                                 style={styles.searchInput}
                                 keyboardType="number-pad"
                                 placeholder="Buscar..."/>
+                            <Picker 
+                                note 
+                                mode="dropdown"
+                                onValueChange={txt => setOptionFilter(txt)}
+                                value={optionFilter}>
+                                <Picker.Item label="Selecione..." value=""/>
+                                <Picker.Item label="Like" value="like"/>
+                                <Picker.Item label="<" value="<"/>
+                                <Picker.Item label=">" value=">"/>
+                                <Picker.Item label="<=" value="<="/>
+                                <Picker.Item label=">=" value=">="/>
+                            </Picker>
                         </View>
                     </View>
                 }
