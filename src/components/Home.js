@@ -2,6 +2,7 @@ import React, { useState, Fragment, useEffect } from 'react'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Picker } from 'native-base';
 import { StyleSheet, View, FlatList, Text, StatusBar, Image, TouchableOpacity, TextInput } from 'react-native';
+import Loading from './Loading';
 
 const Home = ({ route, navigation }) => {
 
@@ -253,6 +254,7 @@ const Home = ({ route, navigation }) => {
 
     return (
         <Fragment>
+            { loading ? <Loading /> : null}
             <StatusBar backgroundColor='#FFF' barStyle='ligth-content' animated={true} />
             {/* Cabecera */}
             <View style={styles.navBar}>
@@ -279,7 +281,7 @@ const Home = ({ route, navigation }) => {
                                 style={styles.searchInput}
                                 keyboardType="number-pad"
                                 placeholder="Buscar..."/>
-                            <Picker 
+                            {/*<Picker 
                                 note 
                                 mode="dropdown"
                                 onValueChange={txt => setOptionFilter(txt)}
@@ -290,7 +292,7 @@ const Home = ({ route, navigation }) => {
                                 <Picker.Item label=">" value=">"/>
                                 <Picker.Item label="<=" value="<="/>
                                 <Picker.Item label=">=" value=">="/>
-                            </Picker>
+                            </Picker>*/}
                         </View>
                     </View>
                 }

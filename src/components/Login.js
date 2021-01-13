@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { View, StyleSheet, Text, ScrollView, Dimensions, TextInput, TouchableOpacity, Image, StatusBar } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import LinearGradient from 'react-native-linear-gradient';
+import Loading from './Loading';
 
 const imageSize = Dimensions.get('window').width * 0.30;
 const eyeSize = Dimensions.get('window').width * 0.07;
@@ -178,7 +179,7 @@ const Login = ({ navigation }) => {
     return (
         <LinearGradient colors={['#49ABED', '#0267AB']} style={styles.gradientMain}>
             <StatusBar backgroundColor='#49ABED' barStyle='ligth-content' animated={true} />
-            
+            { loading ? <Loading /> : null}
             <ScrollView contentContainerStyle={styles.mainBox} style={{flex: 1}}>
                 {/* Caja del login */}
                 <View style={styles.loginBox}>
