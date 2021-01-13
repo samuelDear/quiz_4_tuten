@@ -259,8 +259,8 @@ const Home = ({ route, navigation }) => {
 
     return (
         <Fragment>
+            <StatusBar backgroundColor='#3d3d3d' barStyle='ligth-content' animated={true} />
             { loading ? <Loading /> : null}
-            <StatusBar backgroundColor='#FFF' barStyle='ligth-content' animated={true} />
             {/* Cabecera */}
             <View style={styles.navBar}>
                 <View>
