@@ -243,12 +243,17 @@ const Home = ({ route, navigation }) => {
             marginVertical: 15,
         },
         searchInput: {
+            marginTop: 10,
             borderRadius: 10,
             borderWidth: 0.5,
             marginHorizontal: 15,
             height: 40,
             borderRadius: 27,
             paddingHorizontal: 15
+        },
+        pickerFilter: { 
+            color: '#646464',
+            height: 40,
         }
     });
 
@@ -281,18 +286,21 @@ const Home = ({ route, navigation }) => {
                                 style={styles.searchInput}
                                 keyboardType="number-pad"
                                 placeholder="Buscar..."/>
-                            {/*<Picker 
-                                note 
-                                mode="dropdown"
-                                onValueChange={txt => setOptionFilter(txt)}
-                                value={optionFilter}>
-                                <Picker.Item label="Selecione..." value=""/>
-                                <Picker.Item label="Like" value="like"/>
-                                <Picker.Item label="<" value="<"/>
-                                <Picker.Item label=">" value=">"/>
-                                <Picker.Item label="<=" value="<="/>
-                                <Picker.Item label=">=" value=">="/>
-                            </Picker>*/}
+                            <View style={styles.searchInput}>
+                                <Picker
+                                    note 
+                                    mode="dropdown"
+                                    style={styles.pickerFilter}
+                                    onValueChange={txt => setOptionFilter(txt)}
+                                    selectedValue={optionFilter}>
+                                    <Picker.Item label="Selecione..." value=""/>
+                                    <Picker.Item label="Like" value="like"/>
+                                    <Picker.Item label="<" value="<"/>
+                                    <Picker.Item label=">" value=">"/>
+                                    <Picker.Item label="<=" value="<="/>
+                                    <Picker.Item label=">=" value=">="/>
+                                </Picker>
+                            </View>
                         </View>
                     </View>
                 }
