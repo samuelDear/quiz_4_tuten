@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from 'react'
-import { View, StyleSheet, Text, Dimensions, TextInput, TouchableOpacity, Image, StatusBar } from 'react-native';
+import { View, StyleSheet, Text, ScrollView, Dimensions, TextInput, TouchableOpacity, Image, StatusBar } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import LinearGradient from 'react-native-linear-gradient';
-import { ScrollView } from 'react-native-gesture-handler';
 
 const imageSize = Dimensions.get('window').width * 0.30;
 const eyeSize = Dimensions.get('window').width * 0.07;
 
-const Login = () => {
+const Login = ({ navigation }) => {
 
     const [email, setEmail] = useState('');
     const [pwd, setPwd] = useState('');
@@ -35,7 +34,7 @@ const Login = () => {
         // Armamos la cabecera
         const headerItem = new Headers({ 
             'Content-Type': 'application/json',
-            'email': email,
+            'email': email.toLowerCase(),
             'password': pwd,
             'app': 'APP_BCK',
             'Accept': 'application/json'
@@ -43,19 +42,33 @@ const Login = () => {
 
         setLoading(true);
         //Llamamos a la api
-        fetch(`https://dev.tuten.cl/TutenREST/rest/user/${encodeURIComponent(email)}`,{
+        fetch(`https://dev.tuten.cl/TutenREST/rest/user/${encodeURIComponent(email.toLowerCase())}`,{
             method: 'PUT',
             headers: headerItem,
         }).then(response => {
-
             // Validamos el status
             switch(response.status){
                 case 200:
                     // SI todo salio bien, guardamos el token
                     let data = response.json();
-                    data.then(data => {
+                    data.then(async (data) => {
                         console.log(data);
+
                         setLoading(false);
+
+                        try {
+                            await AsyncStorage.setItem('tokenId', data.sessionTokenBck);
+                            await AsyncStorage.setItem('userName', data.email);
+                        } catch(e) {
+                            console.warn("fetch Error: ", e)
+                        }
+
+                        
+                        
+                        navigation.navigate('Home', {
+                            tokenId: data.sessionTokenBck,
+                            userName: data.email
+                        });
                     })
                     break;
                 case 400:
@@ -149,12 +162,6 @@ const Login = () => {
             justifyContent: 'center', 
             alignItems: 'center',
         },
-        titleScreen:{
-            fontSize: 24,
-            fontFamily: 'Montserrat-SemiBold',
-            color: '#FFF',
-            marginBottom: 30
-        },
         buttonTextPrincipal: {
             color: '#FFF',
             fontSize: 15,
@@ -222,7 +229,6 @@ const Login = () => {
                     </TouchableOpacity>
                 </View>
             </ScrollView>
-
         </LinearGradient>
     );
 }
