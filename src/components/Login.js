@@ -15,6 +15,9 @@ const Login = ({ navigation }) => {
     const [loading, setLoading] = useState(false);
     const [errorMsg, setErrorMsg] = useState('');
 
+    useEffect(() => {
+        setLoading(false);
+    }, []);
 
     const setMistake = msg =>{
         setErrorMsg(msg);
@@ -32,45 +35,53 @@ const Login = ({ navigation }) => {
             return null;
         }
 
-        // Armamos la cabecera
-        const headerItem = new Headers({ 
-            'Content-Type': 'application/json',
-            'email': email.toLowerCase(),
-            'password': pwd,
-            'app': 'APP_BCK',
-            'Accept': 'application/json'
-        });
-
         setLoading(true);
-        //Llamamos a la api
-        fetch(`https://dev.tuten.cl/TutenREST/rest/user/${encodeURIComponent(email.toLowerCase())}`,{
-            method: 'PUT',
-            headers: headerItem,
-        }).then(response => {
-            // Validamos el status
-            switch(response.status){
+
+        var xhttp = new XMLHttpRequest();
+
+        xhttp.onreadystatechange = function() {
+            if (this.readyState == 4) {
+                var rsp = "";
+                if(this.responseText !== ""){
+                    rsp = JSON.parse(this.responseText);
+                    response(this.status, this.responseText);
+                }else{
+                    response(this.status, this.responseText);
+                }
+            }
+        };
+
+        xhttp.open("PUT",`https://dev.tuten.cl/TutenREST/rest/user/${encodeURIComponent(email.toLowerCase())}`, true);
+
+        xhttp.setRequestHeader('Content-Type','application/json');
+        xhttp.setRequestHeader('email', email.toLowerCase());
+        xhttp.setRequestHeader('password',pwd);
+        xhttp.setRequestHeader('app','APP_BCK');
+        xhttp.setRequestHeader('Accept','application/json');
+
+        // Armamos la cabecera
+        async function response(status, respx) {
+            console.log(status);
+            console.log(respx);
+            switch(status){
                 case 200:
                     // SI todo salio bien, guardamos el token
-                    let data = response.json();
-                    data.then(async (data) => {
-                        console.log(data);
+                    let data = JSON.parse(respx);
+                    console.log(data);
 
-                        setLoading(false);
+                    setLoading(false);
 
-                        try {
-                            await AsyncStorage.setItem('tokenId', data.sessionTokenBck);
-                            await AsyncStorage.setItem('userName', data.email);
-                        } catch(e) {
-                            console.warn("fetch Error: ", e)
-                        }
-
+                    try {
+                        await AsyncStorage.setItem('tokenId', data.sessionTokenBck);
+                        await AsyncStorage.setItem('userName', data.email);
+                    } catch(e) {
+                        console.warn("fetch Error: ", e)
+                    }
                         
-                        
-                        navigation.navigate('Home', {
-                            tokenId: data.sessionTokenBck,
-                            userName: data.email
-                        });
-                    })
+                    navigation.navigate('Home', {
+                        tokenId: data.sessionTokenBck,
+                        userName: data.email
+                    });
                     break;
                 case 400:
                     setMistake('Invalid something');
@@ -79,10 +90,9 @@ const Login = ({ navigation }) => {
                     setMistake('Error interno');
                     break;
             }
-            
-        }).catch(e => {
-            setMistake('Error interno');
-        });
+        }
+
+        xhttp.send();
     }
 
     const styles = StyleSheet.create({
